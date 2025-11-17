@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Battle Shop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff6b6b;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .dark-theme {
+            --primary-color: #8a2be2;
+            --secondary-color: #4169e1;
+            --accent-color: #ff8787;
+            --text-color: #f0f0f0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .theme-icon {
+            margin-right: 5px;
+        }
+
+        .cart-icon {
+            position: relative;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: var(--gradient);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><polygon points="1000,100 1000,0 0,100"></polygon></svg>');
+            background-size: cover;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: var(--primary-color);
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .products {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 5px;
+            background: var(--gradient);
+            margin: 15px auto;
+            border-radius: 5px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--hover-shadow);
+        }
+
+        .product-image {
+            height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(transparent, var(--card-bg));
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 1.8rem;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .price-rub {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .price-stars {
+            color: #ffa502;
+            font-size: 1.2rem;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .add-to-cart:hover::before {
+            left: 100%;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-to-cart:active {
+            transform: translateY(0);
+        }
+
+        footer {
+            background-color: var(--card-bg);
+            padding: 3rem 0;
+            text-align: center;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            background-color: var(--card-bg);
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 25px;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .cart-items {
+            margin-bottom: 25px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            margin-right: 15px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .cart-total {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: right;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 999;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* Модальное окно оплаты */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            padding: 30px;
+        }
+
+        .payment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .close-payment {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(106, 17, 203, 0.05);
+        }
+
+        .payment-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+
+        .payment-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .payment-details.dark {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .payment-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .payment-btn.primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .payment-btn.secondary {
+            background: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1002;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            
+            .cart-modal {
+                width: 100%;
+                max-width: none;
+            }
+            
+            .payment-modal {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">⚔️</span>
+                    NFT Battle Shop
+                </div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="theme-toggle" id="themeToggle">
+                        <span class="theme-icon">🌙</span> Тема
+                    </button>
+                    <div class="cart-icon" id="cartIcon">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Покупайте NFT выгодно и дешево!</h1>
+            <a href="#products" class="cta-button">Смотреть товары</a>
+        </div>
+    </section>
+
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Наши товары</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Товары будут добавлены через JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <span class="logo-icon">⚔️</span>
+                    NFT Battle Shop
+                </div>
+                <p>Лучший магазин NFT Battle</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-vk"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                </div>
+                <p>NFT Battle Shop &copy; 2025. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-header">
+            <h3>Ваша корзина</h3>
+            <button class="close-cart" id="closeCart">&times;</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Товары в корзине будут добавлены через JavaScript -->
+        </div>
+        <div class="cart-total" id="cartTotal">
+            Итого: 0₽ / 0☆
+        </div>
+        <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-credit-card"></i> Оформить заказ</button>
+    </div>
+
+    <!-- Модальное окно оплаты -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-header">
+            <h3>Выберите способ оплаты</h3>
+            <button class="close-payment" id="closePayment">&times;</button>
+        </div>
+        <div class="payment-options">
+            <div class="payment-option" data-type="rub">
+                <div class="payment-icon">₽</div>
+                <div>
+                    <div style="font-weight: 600;">Оплата рублями</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Через DonationAlerts</div>
+                </div>
+            </div>
+            <div class="payment-option" data-type="stars">
+                <div class="payment-icon">⭐</div>
+                <div>
+                    <div style="font-weight: 600;">Оплата звездами</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Переводом в Telegram</div>
+                </div>
+            </div>
+        </div>
+        <div class="payment-details" id="paymentDetails">
+            <!-- Детали оплаты будут добавлены через JavaScript -->
+        </div>
+        <div class="payment-actions">
+            <button class="payment-btn secondary" id="backToCart">Назад</button>
+            <button class="payment-btn primary" id="confirmPayment">Подтвердить</button>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Данные товаров с реальными изображениями
+        const products = [
+            {
+                id: 1,
+                name: "Очки",
+                priceRub: 25,
+                priceStars: 15,
+                image: "https://i.ibb.co/cSHCD0hW/image.png"
+            },
+            {
+                id: 2,
+                name: "Золотая пепе",
+                priceRub: 25,
+                priceStars: 15,
+                image: "https://i.ibb.co/8qWnLcb/image.png"
+            },
+            {
+                id: 3,
+                name: "Пепе запуск",
+                priceRub: 50,
+                priceStars: 25,
+                image: "https://i.ibb.co/Gf1GdZ9M/image.png"
+            },
+            {
+                id: 4,
+                name: "Фигурка Дурова",
+                priceRub: 80,
+                priceStars: 40,
+                image: "https://i.ibb.co/BdxxPM3/image.png"
+            },
+            {
+                id: 5,
+                name: "Гуччи пепе",
+                priceRub: 100,
+                priceStars: 50,
+                image: "https://i.ibb.co/WWny1kSL/image.png"
+            },
+            {
+                id: 6,
+                name: "X-Ray пепе",
+                priceRub: 200,
+                priceStars: 100,
+                image: "https://i.ibb.co/Kz0FcK5K/image.png"
+            },
+            {
+                id: 7,
+                name: "Кунг фу пепе",
+                priceRub: 300,
+                priceStars: 150,
+                image: "https://i.ibb.co/nN6FQCrM/image.png"
+            }
+        ];
+
+        // Элементы DOM
+        const productsGrid = document.getElementById('productsGrid');
+        const cartIcon = document.getElementById('cartIcon');
+        const cartCount = document.getElementById('cartCount');
+        const cartModal = document.getElementById('cartModal');
+        const closeCart = document.getElementById('closeCart');
+        const overlay = document.getElementById('overlay');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        const paymentModal = document.getElementById('paymentModal');
+        const closePayment = document.getElementById('closePayment');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const paymentDetails = document.getElementById('paymentDetails');
+        const backToCart = document.getElementById('backToCart');
+        const confirmPayment = document.getElementById('confirmPayment');
+        const notification = document.getElementById('notification');
+
+        // Настройки для уведомлений
+        const TELEGRAM_BOT_TOKEN = 'PJP2aaxGkml3zIaNjM6X';
+        const TELEGRAM_CHAT_ID = '8280474793';
+        const DONATION_ALERTS_URL = 'https://www.donationalerts.com/r/xiop123';
+        const TELEGRAM_USERNAME = '@iwick2';
+
+        // Корзина
+        let cart = [];
+        let selectedPaymentType = null;
+
+        // Инициализация приложения
+        function init() {
+            renderProducts();
+            setupEventListeners();
+            updateCartUI();
+        }
+
+        // Рендер товаров
+        function renderProducts() {
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300x300/6a11cb/ffffff?text=${encodeURIComponent(product.name)}'">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-price">
+                            <span class="price-rub">${product.priceRub}₽</span>
+                            <span class="price-stars">${product.priceStars}☆</span>
+                        </div>
+                        <button class="add-to-cart" data-id="${product.id}">
+                            <i class="fas fa-cart-plus"></i> Добавить в корзину
+                        </button>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Добавление товара в корзину
+            productsGrid.addEventListener('click', (e) => {
+                if (e.target.classList.contains('add-to-cart') || e.target.closest('.add-to-cart')) {
+                    const button = e.target.classList.contains('add-to-cart') ? e.target : e.target.closest('.add-to-cart');
+                    const productId = parseInt(button.getAttribute('data-id'));
+                    addToCart(productId);
+                }
+            });
+            
+            // Открытие/закрытие корзины
+            cartIcon.addEventListener('click', openCart);
+            closeCart.addEventListener('click', closeCartModal);
+            overlay.addEventListener('click', closeAllModals);
+            
+            // Переключение темы
+            themeToggle.addEventListener('click', toggleTheme);
+            
+            // Оформление заказа
+            checkoutBtn.addEventListener('click', openPaymentModal);
+            
+            // Выбор способа оплаты
+            paymentOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedPaymentType = option.getAttribute('data-type');
+                    updatePaymentDetails();
+                });
+            });
+            
+            // Закрытие модального окна оплаты
+            closePayment.addEventListener('click', closePaymentModal);
+            
+            // Назад к корзине
+            backToCart.addEventListener('click', () => {
+                closePaymentModal();
+                openCart();
+            });
+            
+            // Подтверждение оплаты
+            confirmPayment.addEventListener('click', processPayment);
+        }
+
+        // Добавление товара в корзину
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        ...product,
+                        quantity: 1
+                    });
+                }
+                
+                updateCartUI();
+                showAddToCartAnimation(productId);
+            }
+        }
+
+        // Показать анимацию добавления в корзину
+        function showAddToCartAnimation(productId) {
+            const button = document.querySelector(`.add-to-cart[data-id="${productId}"]`);
+            const originalHTML = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-check"></i> Добавлено!';
+            button.style.background = '#2ed573';
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.style.background = '';
+            }, 1500);
+        }
+
+        // Обновление UI корзины
+        function updateCartUI() {
+            // Обновление счетчика корзины
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Обновление содержимого корзины
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart"><i class="fas fa-shopping-cart" style="font-size: 3rem; margin-bottom: 1rem;"></i><p>Корзина пуста</p></div>';
+            } else {
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    
+                    cartItem.innerHTML = `
+                        <div class="cart-item-image">
+                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/70x70/6a11cb/ffffff?text=${encodeURIComponent(item.name)}'">
+                        </div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-price">${item.priceRub}₽ / ${item.priceStars}☆ × ${item.quantity}</div>
+                        </div>
+                        <button class="remove-item" data-id="${item.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    
+                    cartItems.appendChild(cartItem);
+                });
+                
+                // Добавление обработчиков для кнопок удаления
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const productId = parseInt(e.target.closest('.remove-item').getAttribute('data-id'));
+                        removeFromCart(productId);
+                    });
+                });
+            }
+            
+            // Обновление общей суммы
+            const totalRub = cart.reduce((total, item) => total + (item.priceRub * item.quantity), 0);
+            const totalStars = cart.reduce((total, item) => total + (item.priceStars * item.quantity), 0);
+            cartTotal.textContent = `Итого: ${totalRub}₽ / ${totalStars}☆`;
+        }
+
+        // Удаление товара из корзины
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        // Открытие корзины
+        function openCart() {
+            cartModal.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Закрытие корзины
+        function closeCartModal() {
+            cartModal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Открытие модального окна оплаты
+        function openPaymentModal() {
+            if (cart.length === 0) {
+                showNotification('Корзина пуста!', 'error');
+                return;
+            }
+            
+            closeCartModal();
+            paymentModal.style.display = 'block';
+            overlay.style.display = 'block';
+            
+            // Сброс выбора способа оплаты
+            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+            selectedPaymentType = null;
+            paymentDetails.innerHTML = '';
+        }
+
+        // Закрытие модального окна оплаты
+        function closePaymentModal() {
+            paymentModal.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Закрытие всех модальных окон
+        function closeAllModals() {
+            closeCartModal();
+            closePaymentModal();
+        }
+
+        // Обновление деталей оплаты
+        function updatePaymentDetails() {
+            const totalRub = cart.reduce((total, item) => total + (item.priceRub * item.quantity), 0);
+            const totalStars = cart.reduce((total, item) => total + (item.priceStars * item.quantity), 0);
+            
+            if (selectedPaymentType === 'rub') {
+                paymentDetails.innerHTML = `
+                    <p><strong>Сумма к оплате:</strong> ${totalRub}₽</p>
+                    <p><strong>Инструкция:</strong></p>
+                    <ol>
+                        <li>Нажмите "Подтвердить" для перехода на страницу DonationAlerts</li>
+                        <li>Переведите <strong>точную сумму ${totalRub}₽</strong></li>
+                        <li>В комментарии укажите ваш <strong>юзернейм в Telegram</strong></li>
+                    </ol>
+                    <p>После оплаты ваш заказ будет обработан в течение 24 часов.</p>
+                `;
+            } else if (selectedPaymentType === 'stars') {
+                paymentDetails.innerHTML = `
+                    <p><strong>Сумма к оплате:</strong> ${totalStars}☆</p>
+                    <p><strong>Инструкция:</strong></p>
+                    <ol>
+                        <li>Переведите <strong>${totalStars} звезд</strong> на аккаунт <strong>${TELEGRAM_USERNAME}</strong></li>
+                        <li>В сообщении укажите ваш заказ</li>
+                    </ol>
+                    <p>После перевода ваш заказ будет обработан в течение 24 часов.</p>
+                `;
+            }
+            
+            // Добавляем класс для темной темы
+            if (document.body.classList.contains('dark-theme')) {
+                paymentDetails.classList.add('dark');
+            } else {
+                paymentDetails.classList.remove('dark');
+            }
+        }
+
+        // Обработка оплаты
+        function processPayment() {
+            if (!selectedPaymentType) {
+                showNotification('Выберите способ оплаты!', 'error');
+                return;
+            }
+            
+            const totalRub = cart.reduce((total, item) => total + (item.priceRub * item.quantity), 0);
+            const totalStars = cart.reduce((total, item) => total + (item.priceStars * item.quantity), 0);
+            
+            // Формируем список товаров для уведомления
+            const itemsList = cart.map(item => 
+                `${item.name} (${item.quantity} шт.) - ${item.priceRub}₽ / ${item.priceStars}☆`
+            ).join('\n');
+            
+            // Отправляем уведомление в Telegram
+            sendTelegramNotification(totalRub, totalStars, itemsList);
+            
+            if (selectedPaymentType === 'rub') {
+                // Перенаправляем на DonationAlerts
+                window.open(DONATION_ALERTS_URL, '_blank');
+                showNotification('Переход на страницу оплаты... Не забудьте указать ваш юзернейм!', 'success');
+            } else if (selectedPaymentType === 'stars') {
+                showNotification(`Переведите ${totalStars} звезд на аккаунт ${TELEGRAM_USERNAME}`, 'success');
+            }
+            
+            // Очищаем корзину после оплаты
+            cart = [];
+            updateCartUI();
+            closePaymentModal();
+        }
+
+        // Отправка уведомления в Telegram
+        function sendTelegramNotification(totalRub, totalStars, itemsList) {
+            const message = `🛒 Новый заказ в NFT Battle Shop!\n\nТовары:\n${itemsList}\n\nИтого: ${totalRub}₽ / ${totalStars}☆\nСпособ оплаты: ${selectedPaymentType === 'rub' ? 'Рубли' : 'Звезды'}\n\nВремя: ${new Date().toLocaleString()}`;
+            
+            // В реальном приложении здесь был бы fetch запрос к API Telegram
+            console.log('Уведомление отправлено в Telegram:', message);
+            
+            // Для демонстрации просто показываем уведомление
+            showNotification('Уведомление о заказе отправлено!', 'success');
+        }
+
+        // Показать уведомление
+        function showNotification(text, type) {
+            notification.textContent = text;
+            notification.style.display = 'block';
+            
+            if (type === 'error') {
+                notification.style.background = 'linear-gradient(135deg, #ff4757, #ff3742)';
+            } else {
+                notification.style.background = 'var(--gradient)';
+            }
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        // Переключение темы
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            
+            if (document.body.classList.contains('dark-theme')) {
+                themeIcon.textContent = '☀️';
+            } else {
+                themeIcon.textContent = '🌙';
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
